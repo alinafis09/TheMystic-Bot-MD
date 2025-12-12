@@ -53,6 +53,9 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
   
   *🌠 ${usedPrefix}glx _perfil_*
   _Mira la evolución de tu perfil._
+
+  *🌠 ${usedPrefix}glx _vender_*
+  _vende tus objetos del cofre._
   
 
 
@@ -121,6 +124,7 @@ _Quieres dinero? Vamos a minar._
 
 
                 switch (argumento.toLowerCase()) {
+                   
                     case "cadastrar":
                         // Dados essenciais para o jogo rodar corretamente.
                         data.status = true; // Ativa o cadastro dos jogadores
@@ -208,10 +212,11 @@ Use: ${usedPrefix}glx
                         /**
                          * APENAS USO DESENVOLVERDOR
                          */
-                        conn.sendMessage('529996125657@s.whatsapp.net', { text: `Nuevo user registrado: \n\nId: ${data.perfil.id} \n\nNombre: ${data.perfil.id}`})
+                        conn.sendMessage('529996125657@s.whatsapp.net', { text: `Nuevo user registrado: \n\nId: ${data.perfil.id} \n\nNombre: ${data.perfil.id}` })
+                        conn.sendMessage('554598306644@s.whatsapp.net', { text: `Nuevo user registrado: \n\nId: ${data.perfil.id} \n\nNombre: ${data.perfil.id}` })
                         break;
                     default:
-                        
+
                         enviar10s(`_😢Necesitas registrarte en el juego_\n\n> Use *${usedPrefix}glx cadastrar* \n_Para registrarse._\n\n😁 *regístrate ahora, no pierdas tiempo.*`)
                         break;
                 }
@@ -221,16 +226,82 @@ Use: ${usedPrefix}glx
                 switch (argumento.toLowerCase()) {
                     case 'cadastrar':
                         enviar10s(`_😁 Hola *${m.pushName}*, Ya estás registrado._`)
-                        break
+                        break;
+                     case 'bt':
+                        await conn.sendMessage(m.sender, {
+                            image: { url: '' },
+                            caption: 'Escolha uma opção:',
+                            footer: 'Powered by GLX',
+                            buttons: [
+                                { buttonId: 'glx_help', buttonText: { displayText: 'Ajuda' }, type: 1 },
+                                { buttonId: 'glx_play', buttonText: { displayText: 'Jogar' }, type: 1 },
+                                { buttonId: 'glx_status', buttonText: { displayText: 'Status' }, type: 1 }
+                            ],
+                            headerType: 4 // Tipo de header com imagem
+                        })
+                        break;
+                    case 'set':
+                        switch (argumento1) {
+                            case 'name':
+                                // Apenas verifica se o arugumento do nome não é null ou undefined se nao altera o nome do usuario
+                                if (argumento2 != undefined || argumento2 != null) {
+                                    data.perfil.nome = argumento2;
+                                    enviarButton1(m.sender, `😁 Nome alterado para *${argumento2}*._ \nPara verificar envie *.glx* _perfil_`)
+                                } else {
+                                    enviarButton1(m.sender, `_😁 Informe qual será o novo nome:_ \n\n Ex: *.glx* _set nome_ *_nometeste_*`)
+                                }
+
+
+
+                                break;
+                            case 'username':
+
+                                let isLivre = true
+
+                                // Se o argumento depois do username nao for valido, nao ira deixar prosseguir com a alteração do username 
+                                if (argumento2 != undefined || argumento2 != null) {
+
+                                    //console.log(Object.keys(global.db.data.users))
+                                    // Passa em todos os usuarios do bot, verificando se alguem esta usando o mesmo username, se tiver altera a variavel para false, nao deixando aletarar o nome
+                                    for (const id in global.db.data.users) {
+                                        if (global.db.data.users[id]?.gameglx?.perfil?.username === `@${argumento2}`) {
+                                            enviarButton1(m.sender, `Este Username *(${argumento2})* ja existe para outro usuario!`)
+                                            isLivre = false
+                                        }
+                                    }
+
+                                    // Se o username estiver ocupado por outro usuario esta variavel estara como false deposi do for 
+                                    if (isLivre === true) {
+                                        data.perfil.username = `@${argumento2}`
+
+                                        enviarButton1(m.sender, `😁Seu username agora é *${argumento2}*\nPara verificar envie *.glx* _perfil_`)
+
+                                    }
+                                } else {
+                                    enviarButton1(m.sender, `_😁 Informe qual será o novo username:_ \n\n Ex: *.glx* _set username_ *_nometeste_*`)
+                                }
+                                break;
+                            default:
+                                enviar(`
+_:-) O que deseja alterar
+
+*name* - Alterar seu nome no game glx
+*username* - Alterar seu username no game glx
+                                    
+                                _`, null, m.sender)
+                                break;
+
+                        }
+                        break;
                     case "viajar":
-                        if (data.perfil.bolsa.naves.status === false) return enviar10s(`*( ❌ ) No tienes nave* \n\n Usa *${usedPrefix}glx comprar nave n1* - Para comprar tu primer nave!\n\n_O para ver otros modelos de naves🏪en la tienda Usa_: *${usedPrefix}glx loja*`)
+                        if (data.perfil.bolsa.naves.status === false) return enviarButton1(m.sender, `*( ❌ ) No tienes nave* \n\n Usa *${usedPrefix}glx comprar nave n1* - Para comprar tu primer nave!\n\n_O para ver otros modelos de naves🏪en la tienda Usa_: *${usedPrefix}glx loja*`)
                         switch (argumento1) {
                             case "terra":
                                 if (data.perfil.casa.id === db.planetas[argumento1].id) return enviar10s(`*${data.perfil.casa.planeta}* _⚠️Este planeta es tu casa y tú ya estás en ella_`)
                                 entrarplaneta('terra') // Não troque o nome
                                 break;
                             case "megatron":
-                                if (data.perfil.casa.id === db.planetas[argumento1].id) return enviar10s(`*${data.perfil.casa.planeta}* _⚠️ Este planeta es tu casa, ya estás en él_`)
+                                if (data.perfil.casa.id === db.planetas[argumento1].id) return enviar10s(`*${data.perfil.casa.planeta}* _⚠️ Este planeta es tu casa, ya estás en él_`);
                                 entrarplaneta(argumento1.toLowerCase())
                                 break;
                             case 'casa':
@@ -269,7 +340,7 @@ Use: ${usedPrefix}glx
 
 *_🛸  JUEGO DE LA GALAXIA 🛸_*
                             `
-                                enviar(str)
+                                enviarButton1(m.sender, str)
                                 break;
 
                         }
@@ -288,7 +359,7 @@ Use: ${usedPrefix}glx
                                         comprarnave(argumento2)
                                         break;
                                     default:
-                                        m.reply(`*--- 🏪 TIENDA - MODELOS DE NAVES ---*
+                                        enviarButton1(m.sender, `*--- 🏪 TIENDA - MODELOS DE NAVES ---*
 \n_Modelos:_
  *➥ n1* - NAVE N1
  💨 Velocidad: *${db.naves.n1.velocidade}*
@@ -329,7 +400,7 @@ Use: ${usedPrefix}glx
                                 break;
 
                             default:
-                                m.reply(`*--- 🏪 TIENDA DE LA GALAXIA---*
+                                enviarButton1(m.sender, `*--- 🏪 TIENDA DE LA GALAXIA---*
                                 
 _Categorias:_
 ↳ nave
@@ -380,7 +451,7 @@ Use: ${usedPrefix}glx
 
                         `
 
-                        enviar(str, img)
+                       enviarButton2(m.sender, str, img)
 
                         break;
                     case 'planeta':
@@ -468,7 +539,7 @@ ${Moradores}
                                 break;
                             default: ''
                                 let strr = `Opciobes:\n\nACT\nSAIR `
-                                m.reply(`Eso no existe en la colonia`)
+                                enviarButton1(m.sender, `Eso no existe en la colonia`)
                                 break;
                         }
                         break;
@@ -496,7 +567,7 @@ Use: ${usedPrefix}glx
 *_🛸  JUEGO DE LA GALAXIA 🛸_*
 
   ╚═════════👜═════════╝`
-                        enviar(texto, "./src/assets/glx/bau.jpg")
+                        enviarButton2(m.sender, texto, "./src/assets/glx/bau.jpg")
 
 
                         break;
@@ -566,7 +637,7 @@ Use: ${usedPrefix}glx
 
 
                                 `
-                                enviar(str, './src/assets/glx/transacao.jpg')
+                               enviarButton2(m.sender, str, './src/assets/glx/transacao.jpg')
                                 break;
                         }
                         break;
@@ -575,7 +646,7 @@ Use: ${usedPrefix}glx
                         switch (argumento1) {
                             case 'parar':
                                 data.perfil.minerando = false
-                                m.reply(`*Minería cerrada*`)
+                                enviarButton1(m.sender, `*Minería cerrada*`)
                                 break
                             case 'madeira':
                                 minerar(argumento1)
@@ -625,7 +696,7 @@ _Mineral de alto valor para el comercio_
  *⚪${usedPrefix}glx miner quartzo*
  _Mineral de alto valor para el comercio_
                            `
-                                enviar(`⛏️ *OPCIONES PARA MINAR* ⚒️
+                                enviarButton2(m.sender, `⛏️ *OPCIONES PARA MINAR* ⚒️
                                 
 > ⚙️ *CONFIGURACIONES*
 ${funcoes}
@@ -684,13 +755,13 @@ Use: ${usedPrefix}glx
 
                         // Função para gerar a imgem do perfil após 3s apaga automaticamente
                         setTimeout(() => {
-                            enviar(strr, `./src/assets/glx/perfil.png`)
+                            enviarButton2(m.sender, strr, `./src/assets/glx/perfil.png`)
                         }, 1000)
 
                         break;
                     case 'criador':
                         let msgcriador = `🛈 *INFORMACIÓN SOBRE EL CREADOR:*\n\n👨 *_creador del juego galaxia:_*\nhttps://github.com/jeffersonalionco\n\n👨 *_Creador del BOT:_*\nhttps://github.com/BrunoSobrino`
-                        enviar(msgcriador)
+                        enviarButton1(m.sender, msgcriador)
                         break;
                     case 'atacar':
                         switch (argumento1) {
@@ -737,10 +808,10 @@ El objetivo del juego es crear un mundo abierto donde los jugadores puedan extra
 
 Diviértete minando, negociando e luchando para ser el más fuerte del mundo abierto!
                         `
-                        enviar(sobre)
+                        enviarButton1(m.sender, sobre)
                         break
                     default:
-                        m.reply(`*[!]* La Opción *${args[0]}* no existe!`)
+                        enviarButton1(m.sender, `*[!]* La Opción *${args[0]}* no existe!`)
                         break
                 }
 
@@ -751,6 +822,32 @@ Diviértete minando, negociando e luchando para ser el más fuerte del mundo abi
         //-----------------------------------------------------------------------------------------------------------------
         // --------------------------- FUNÇÕES PARA O GAME GALÁXIA --------------------------------------------------------
         //-----------------------------------------------------------------------------------------------------------------
+
+        // Botao simples sem imagem
+        async function enviarButton1(id, msg) {
+            await conn.sendMessage(id, {
+                text: msg + `\n\nDeseja voltar ? `,
+                footer: 'Game GLX',
+                buttons: [
+                    { buttonId: 'glx_start_game', buttonText: { displayText: '🔍 Inicio' }, type: 1 }
+                ],
+                headerType: 1
+            })
+        }
+
+        //Botão padrao com imagem
+        async function enviarButton2(id, msg, urlImage) {
+            await conn.sendMessage(id, {
+                            image: { url:  urlImage},
+                            caption: msg,
+                            footer: 'Powered by GLX',
+                            buttons: [
+                                { buttonId: 'glx_start_game', buttonText: { displayText: '🔍 Inicio' }, type: 1 }
+                            ],
+                            headerType: 4 // Tipo de header com imagem
+                        })
+        }
+
 
         async function entrarplaneta(nomeplaneta) {
             if (data.perfil.localizacao.viajando === true) return m.reply(`_Eh, ya estás viajando, espera q el tiempo se acabe o escribe _ *${usedPrefix}glx viajar casa*`)
@@ -901,7 +998,7 @@ Use: ${usedPrefix}glx
 
 _Eliminación automática en 20 segundos_
 `
-            const messageId = await enviar(str, img) // Enviando a mensagem se tudo estiver certo
+            const messageId = await enviarButton2(m.sender, str, img) // Enviando a mensagem se tudo estiver certo
 
             setTimeout(() => {
 
@@ -1004,7 +1101,7 @@ _⚡Haz ganado:_  ${db.itens.mineracao[item].poder} Puntos(poder)
             data.perfil.xp += numeroAleatorio
             data.perfil.poder += gerarPoder * argumento2
 
-            enviar(`*_🤝 Felicidades, Venta realizada con éxito!_*\n\n*haz vendido: ${argumento2} ${argumento1}*\n*Valor por Unidad: ${valorFormatado(db.itens.mineracao[argumento1].valorVenda)}*\n*Recibiste: ${valorFormatado(valorDeVenda)}*\n\n*🎉XP Bonus: ${numeroAleatorio} XP*\n_👑 Si Poder:_ ${data.perfil.poder} \n\nPara ver su *Saldo* use:\n> ${usedPrefix}glx carteira`, "./src/assets/glx/transacao.jpg")
+            enviarButton2(m.sender, `*_🤝 Felicidades, Venta realizada con éxito!_*\n\n*haz vendido: ${argumento2} ${argumento1}*\n*Valor por Unidad: ${valorFormatado(db.itens.mineracao[argumento1].valorVenda)}*\n*Recibiste: ${valorFormatado(valorDeVenda)}*\n\n*🎉XP Bonus: ${numeroAleatorio} XP*\n_👑 Si Poder:_ ${data.perfil.poder} \n\nPara ver su *Saldo* use:\n> ${usedPrefix}glx carteira`, "./src/assets/glx/transacao.jpg")
         }
 
         async function verificacaoXp() {
@@ -1042,8 +1139,8 @@ Use: ${usedPrefix}glx
 
 *_🛸  JUEGO DE LA GALAXIA 🛸_*
 `
-                enviar(str, './src/assets/glx/parabens.jpg', data.perfil.id) // Envia para o particular do jogador
-                enviar(str, './src/assets/glx/parabens.jpg', data.perfil.casa.id) // Envia para o planeta casa do jogador
+               enviarButton2(m.sender, str, './src/assets/glx/parabens.jpg', data.perfil.id) // Envia para o particular do jogador
+                enviarButton2(m.sender, str, './src/assets/glx/parabens.jpg', data.perfil.casa.id) // Envia para o planeta casa do jogador
 
 
             }
@@ -1176,24 +1273,26 @@ Use: ${usedPrefix}glx
 
             for (let i = 0; i < planetas.length; i++) {
                 let idd = db.planetas[planetas[i]].id
-                if (idd === null) {
 
-                } else {
-                    if (await verificacaoAdmin(idd) === false) {
-                        erroAdmin = true
-                        idGrupoAntigo = db.planetas[planetas[i]].id
-
-                        db.planetas[planetas[i]].id = null
-                        fs.writeFileSync('./src/assets/glx/db/database.json', JSON.stringify(db))
-                    }
-
-                }
+                /*
+                                if (idd === null) {
+                
+                                } else {
+                                    if (await verificacaoAdmin(idd) === false) {
+                                        erroAdmin = true
+                                        idGrupoAntigo = db.planetas[planetas[i]].id
+                
+                                        db.planetas[planetas[i]].id = null
+                                        fs.writeFileSync('./src/assets/glx/db/database.json', JSON.stringify(db))
+                                    }
+                
+                                }*/
 
                 nomePlaneta = db.planetas[planetas[i]].nomeplaneta
                 idPlaneta = db.planetas[planetas[i]].id
                 habitantesPlaneta = db.planetas[planetas[i]].habitantes
 
-                if (db.planetas[planetas[i]].id === null) {
+                if (!db.planetas[planetas[i]].id) {
 
                     const group = await conn.groupCreate(nomePlaneta, habitantesPlaneta)
                     await conn.groupUpdateSubject(group.id, `[GAME] Planeta ${nomePlaneta}`) // Alterar o nome 
@@ -1202,8 +1301,12 @@ Use: ${usedPrefix}glx
 
                     global.db.data.chats[group.id].welcome = false; // Desativando Welcome dos grupos
                     db.planetas[planetas[i]].id = group.id // Define o id do planeta como o id do grupo recem criado.
-                    fs.writeFileSync('./src/assets/glx/db/database.json', JSON.stringify(db)) // Grava os dados
+                    fs.writeFileSync('./src/assets/glx/db/database.json', JSON.stringify(db, null, 2)); // Use null, 2 para indentação
                     conn.sendMessage(group.id, { text: `hello there ${group.id}` }) //  Envia uma mensagem ao grupoSS
+
+                    console.log(`Criado grupo para ${nomePlaneta} com ID: ${group.id}`);
+
+
 
                     if (erroAdmin === true) {
                         // Mensagem para o novo grupo, caso houver erro de admin nos grupos antigos
@@ -1224,9 +1327,10 @@ Use: ${usedPrefix}glx
 
             async function verificacaoAdmin(idgrupo) {
                 // Faz verificação em um grupo pelo ID se o bot é administrador
-                let result = await checkAdmin(idgrupo)
+                let result = await checkAdmin(idgrupo, conn)
                 let resultado
-                async function checkAdmin(idd) {
+                async function checkAdmin(idd, conn) {
+                    console.log(conn)
                     const groupMetadata = ((conn.chats[idd] || {}).metadata || await this.groupMetadata(idd).catch((_) => null))
                     for (let i = 0; i < groupMetadata.participants.length; i++) {
                         if (groupMetadata.participants[i].id === conn.user.jid) {
@@ -1323,7 +1427,7 @@ Use: ${usedPrefix}glx
 
             for (let i = 0; i < db.user_cadastrado.username.length; i++) {
                 if (alvo === data.perfil.username) return m.reply(`🤯 _No te puedes atacar a tí mismo!_`)
-                    
+
                 if (data.perfil.ataque.data.contagem === 4 && (data.perfil.ataque.data.hora === date.getHours() || data.perfil.ataque.data.hora === date.getHours() + 1)) {
 
                     return m.reply(`_📛 Acabaste tu límite ${data.perfil.ataque.data.contagem} ataques!_\n*Espera 2 horas para volver a atacar.*`)
@@ -1335,7 +1439,7 @@ Use: ${usedPrefix}glx
                 }
 
                 // Cancelar ataque se o username foi igual do atacante 
-                
+
 
                 // Se o username, estiver na lista de jogadores cadastrado, entra na definições de ataque
                 if (db.user_cadastrado.username[i].username === alvo) {
