@@ -1,6 +1,7 @@
 <p align="center">
  <img width="180px" src="https://i.ibb.co/Qn1W6cP/image.png" align="center"/>
  <h2 align="center">TheMystic-Bot-MD</h2>
+ <p align="center">DEPRECATED | PROYECTO DESACTUALIZADO.</p>
  <p align="center">Un bot para la plataforma de WhatsApp automatizado, basado especialmente en Node.js, que permite realizar múltiples funciones y personalizaciones en la plataforma.</p>
 </p>
 
@@ -74,19 +75,15 @@
 <details>
  <summary><b>:paperclip: Enlaces Importantes</b></summary>
 
-- [Sitio web](https://cafirexos.com)
+- [Sitio web](https://cafirexos.com/)
 - [Área de clientes](https://cafirexos.com/clientarea.php)
 - [Panel de control](https://panel.cafirexos.com)
 - [Base de conocimientos](https://cafirexos.com/knowledgebase)
 - [Estado de los servicios](https://estado.cafirexos.com)
-- [Canal de WhatsApp](https://cafirexos.com/whatsapp/canal)
-- [Comunidad de WhatsApp](https://cafirexos.com/whatsapp/comunidad)
-- [Soporte](https://cafirexos.com/submitticket.php)
+- [Canal de WhatsApp](https://links.cafirexos.com/whatsapp/canal)
+- [Soporte](https://cafirexos.com/contactenos)
 
 </details>
-
-> [!IMPORTANT]\
-> El registro de usuarios solo es posible al comprar uno de nuestros productos en la [tienda](https://cafirexos.com/store).
 
 ## Despliegue en BoxMineWorld
 
